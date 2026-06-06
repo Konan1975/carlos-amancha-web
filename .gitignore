@@ -1,6 +1,10 @@
 # Ignore local configuration files
 config.php
 
+enviarphp
+procesar_contacto.php
+index.php
+
 # Common system files
 .DS_Store
 Thumbs.db
