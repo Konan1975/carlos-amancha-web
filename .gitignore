@@ -5,6 +5,12 @@ enviarphp
 procesar_contacto.php
 index.php
 
+# Ignore generated artifacts and uploads
+uploads/
+*.zip
+menu-fix.zip
+deploy.zip
+
 # Common system files
 .DS_Store
 Thumbs.db

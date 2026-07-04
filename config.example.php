@@ -1,15 +1,21 @@
 <?php
-// Copia este archivo a 'config.php' y rellena con tus credenciales en el servidor
+// Ejemplo de configuración para InfinityFree.
+// Copia este archivo como config.php y ajusta los valores.
 
-// Configuración de base de datos
-$db_host = 'TU_DB_HOST';
-$db_user = 'TU_DB_USER';
-$db_pass = 'TU_DB_PASS';
-$db_name = 'TU_DB_NAME';
+$db_host = 'localhost';
+$db_user = 'tu_usuario_mysql';
+$db_pass = 'tu_password_mysql';
+$db_name = 'tu_base_de_datos';
 
-// Configuración de correo
-$email_to = 'tu@correo.com';
-$email_from = 'no-reply@tudominio.com';
+$email_to = 'tu-correo@dominio.com';
+$email_from = 'no-reply@tu-dominio.com';
 
-// Nota: no subas credenciales sensibles a repositorios públicos.
+define('DB_HOST', $db_host);
+define('DB_USER', $db_user);
+define('DB_PASS', $db_pass);
+define('DB_NAME', $db_name);
+define('UPLOAD_DIR', __DIR__ . '/uploads');
+define('UPLOAD_EXTENSIONS', ['pdf', 'jpg', 'jpeg', 'png']);
+define('UPLOAD_MIME_TYPES', ['application/pdf', 'image/jpeg', 'image/png']);
+define('UPLOAD_MAX_SIZE', 2 * 1024 * 1024);
 ?>

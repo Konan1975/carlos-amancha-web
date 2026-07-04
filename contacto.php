@@ -14,6 +14,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="contacto.php" class="active">Contacto</a></li>
+                <li><a href="archivos.php">Archivos</a></li>
             </ul>
         </div>
     </nav>

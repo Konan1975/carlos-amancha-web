@@ -301,6 +301,96 @@ section h2 i {
     color: #667eea;
 }
 
+/* Gestión de archivos */
+.file-manager-section {
+    background: white;
+    min-height: calc(100vh - 200px);
+    padding: 3rem 0;
+}
+
+.file-manager-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.file-upload-form,
+.file-list-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.file-upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.file-upload-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+.file-upload-form small {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.message-box {
+    background: #e9f7ef;
+    border: 1px solid #c8ebd0;
+    color: #1f5e3a;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.message-box ul {
+    padding-left: 1.2rem;
+}
+
+.file-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.file-table th,
+.file-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.file-table th {
+    background: #eef2ff;
+    color: #4c51bf;
+}
+
+.action-link,
+.delete-btn {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: #667eea;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.delete-btn {
+    color: #c53030;
+}
+
+.inline-form {
+    display: inline-block;
+}
+
 /* Footer */
 .footer {
     background: #333;
@@ -318,6 +408,13 @@ section h2 i {
 .footer a:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 900px) {
+    .file-manager-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {
