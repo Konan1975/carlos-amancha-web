@@ -1,0 +1,9 @@
+# Denegar ejecución de scripts en el directorio de uploads
+<FilesMatch "\.(php|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+  Require all denied
+</FilesMatch>
+
+# Permitir acceso a archivos estáticos comunes
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf|txt|zip|rar)$">
+  Require all granted
+</FilesMatch>

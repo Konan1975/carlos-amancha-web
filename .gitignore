@@ -6,7 +6,8 @@ procesar_contacto.php
 index.php
 
 # Ignore generated artifacts and uploads
-uploads/
+uploads/*
+!uploads/.htaccess
 *.zip
 menu-fix.zip
 deploy.zip
