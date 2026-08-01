@@ -3,35 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notas | Carlos Amancha</title>
+    <title>Notas UTPL | Carlos Amancha</title>
+        <meta name="description" content="Simulador de proyeccion de notas UTPL para estudiantes: calcula, guarda y visualiza escenarios de calificaciones por materia y bimestre.">
+        <meta name="keywords" content="UTPL, notas, simulador, proyeccion academica, calculadora de notas, estudiantes">
+        <meta name="author" content="Carlos Amancha">
+        <meta name="robots" content="index,follow">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Simulador de Notas UTPL | Carlos Amancha">
+        <meta property="og:description" content="Herramienta para calcular y visualizar la proyeccion de notas UTPL por materia, bimestre y estado academico.">
+        <meta property="og:url" content="https://carlos-amancha.infinityfreeapp.com/notas.php">
+        <meta property="og:site_name" content="Carlos Amancha">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Simulador de Notas UTPL">
+        <meta name="twitter:description" content="Calcula, guarda y compara proyecciones de notas UTPL de forma simple.">
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Simulador de Proyeccion de Notas UTPL",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Web",
+            "description": "Modulo para calcular, establecer y visualizar proyecciones de notas de estudiantes UTPL.",
+            "creator": {
+                "@type": "Person",
+                "name": "Carlos Amancha"
+            }
+        }
+        </script>
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="notes-page">
     <nav class="navbar">
         <div class="container">
             <h1 class="logo">Carlos Amancha</h1>
             <ul class="nav-links">
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/notas.html" class="active">Notas</a></li>
-                <li><a href="/contacto.php">Contacto</a></li>
-                <li><a href="/archivos.php">Archivos</a></li>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="notas.php" class="active">Notas</a></li>
+                <li><a href="contacto.php">Contacto</a></li>
+                <li><a href="archivos.php">Archivos</a></li>
             </ul>
         </div>
     </nav>
 
-    <section class="contact-section">
-        <div class="container">
-            <h2><i class="fas fa-sticky-note"></i> Notas</h2>
-            <p class="contact-intro">Aquí puedes ver la sección de notas de la web personal.</p>
-            <div class="form-container">
-                <h3><i class="fas fa-cogs"></i> Proceso de la nota</h3>
-                <ol>
-                    <li><strong>Captura:</strong> el contenido se prepara para la nota.</li>
-                    <li><strong>Validación:</strong> se revisa que el texto cumpla con el formato básico.</li>
-                    <li><strong>Guardado:</strong> la nota queda registrada para la web.</li>
-                    <li><strong>Visualización:</strong> se muestra en esta sección.</li>
-                </ol>
+    <section class="contact-section notes-section">
+        <div class="container notes-shell">
+            <h2><i class="fas fa-graduation-cap"></i> Registro de Notas</h2>
+            <p class="contact-intro">Guarda varias simulaciones por materia, vuelve a editarlas cuando quieras y revisa el resultado con el formato de ponderación del reporte.</p>
+
+            <div class="notes-layout">
+                <aside class="notes-sidebar">
+                    <div class="notes-card notes-sidebar-card">
+                        <h3><i class="fas fa-folder-open"></i> Simulaciones guardadas</h3>
+                        <p class="notes-sidebar-text">Cada botón del costado representa una materia simulada guardada en este navegador.</p>
+                        <div class="notes-sidebar-actions">
+                            <button type="button" id="btnNuevaSimulacion" class="notes-btn notes-btn-secondary">Nueva</button>
+                            <button type="button" id="btnDuplicarSimulacion" class="notes-btn notes-btn-secondary">Duplicar</button>
+                        </div>
+                        <div id="listaSimulaciones" class="notes-saved-list"></div>
+                        <div class="notes-metrics-box">
+                            <p><strong>Usuarios registrados (opcional):</strong> <span id="metricUsuarios">0</span></p>
+                            <p><strong>Simulaciones registradas:</strong> <span id="metricSimulaciones">0</span></p>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="notes-content">
+                    <div class="form-container notes-card">
+                        <h3><i class="fas fa-pen"></i> Datos de la simulación</h3>
+                        <div class="notes-meta-grid">
+                            <label class="notes-field">
+                                Carrera/Programa
+                                <input id="carreraPrograma" type="text" value="Tecnologias de la Informacion">
+                            </label>
+                            <label class="notes-field">
+                                Periodo academico
+                                <input id="periodoAcademico" type="text" value="ABR/2026 - AGO/2026">
+                            </label>
+                            <label class="notes-field">
+                                Asignatura
+                                <input id="asignatura" type="text" value="Gestion de Proyectos">
+                            </label>
+                            <label class="notes-field">
+                                Codigo
+                                <input id="codigoAsignatura" type="text" value="ADM1_4104">
+                            </label>
+                        </div>
+                        <div class="notes-primary-actions">
+                            <button type="button" id="btnGuardarSimulacion" class="notes-btn notes-btn-primary">Guardar simulacion</button>
+                            <button type="button" id="btnImprimirSimulacion" class="notes-btn notes-btn-secondary">Imprimir o exportar PDF</button>
+                            <button type="button" id="btnEliminarSimulacion" class="notes-btn notes-btn-danger">Eliminar seleccionada</button>
+                        </div>
+                        <p id="simulacionEstado" class="notes-status-text">Simulación base cargada. Puedes editarla y guardarla como una materia nueva.</p>
+
+                        <div class="notes-optin-box">
+                            <h4><i class="fas fa-user-check"></i> Registro incipiente (opcional)</h4>
+                            <p>Si deseas, puedes registrar esta simulación para contribuir al conteo inicial de usuarios del módulo.</p>
+                            <label class="notes-checkbox-line">
+                                <input id="registroOptIn" type="checkbox">
+                                Quiero registrar esta simulación en el servidor
+                            </label>
+                            <div class="notes-meta-grid notes-optin-grid">
+                                <label class="notes-field">
+                                    Nombre (opcional)
+                                    <input id="registroNombre" type="text" placeholder="Tu nombre">
+                                </label>
+                                <label class="notes-field">
+                                    Correo (recomendado para conteo unico)
+                                    <input id="registroCorreo" type="email" placeholder="tu@correo.com">
+                                </label>
+                            </div>
+                            <p id="registroEstado" class="notes-status-text">Si no marcas esta opción, puedes usar el simulador normalmente sin registro.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-container notes-card">
+                        <h3><i class="fas fa-table"></i> I Bimestre</h3>
+                        <p class="notes-card-intro">Modifica las calificaciones y revisa su ponderación inmediata sobre el total del bimestre.</p>
+                        <p class="notes-component-title">Componente: Aprendizaje en contacto con el docente Bimestre I (ACDB1) 35,000 % (= 3,5 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Componente</th>
+                                        <th>Peso</th>
+                                        <th>Nota</th>
+                                        <th>Aporte</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>[ACDB1-35%][SUP1] Videocolaboracion: Aporte sobre criterios y parametros para valorar financieramente un proyecto</td>
+                                        <td>35%</td>
+                                        <td><input id="b1AcdbBase" type="number" min="0" max="10" step="0.01" value="0" class="notes-number-input"></td>
+                                        <td><span id="b1AcdbBaseAporte">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>[ACDB1-35%][SUP1] Actividad suplementaria: Aporte sobre criterios y parametros para valorar financieramente un proyecto</td>
+                                        <td>35%</td>
+                                        <td><input id="b1AcdbSup" type="number" min="0" max="10" step="0.01" value="10" class="notes-number-input"></td>
+                                        <td><span id="b1AcdbSupAporte">3.50</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="notes-component-title">Componente: Aprendizaje autonomo Bimestre I (AAB1) 35,000 % (= 3,5 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Peso</th>
+                                        <th>Nota /10</th>
+                                        <th>Nota ponderada</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Evaluacion parcial</td>
+                                        <td>10%</td>
+                                        <td><input id="b1AabParcial" type="number" min="0" max="10" step="0.01" value="8" class="notes-number-input"></td>
+                                        <td><span id="b1AabParcialAporte">0.80</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Evaluacion bimestral</td>
+                                        <td>25%</td>
+                                        <td><input id="b1AabBimestral" type="number" min="0" max="10" step="0.01" value="7.25" class="notes-number-input"></td>
+                                        <td><span id="b1AabBimestralAporte">1.81</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="notes-component-title">Componente: Aprendizaje practico experimental Bimestre I (APEB1) 30,000 % (= 3 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Peso</th>
+                                        <th>Nota /10</th>
+                                        <th>Nota ponderada</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>[APEB1-30%] Laboratorio virtual: Acta de constitucion, lista de interesados y WBS del proyecto</td>
+                                        <td>30%</td>
+                                        <td><input id="b1Apeb" type="number" min="0" max="10" step="0.01" value="3" class="notes-number-input"></td>
+                                        <td><span id="b1ApebAporte">0.90</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="notes-total-line"><strong>Total I Bimestre:</strong> <span id="b1Total">7.01</span> / 10</p>
+                    </div>
+
+                    <div class="form-container notes-card">
+                        <h3><i class="fas fa-table"></i> II Bimestre</h3>
+                        <p class="notes-card-intro">El segundo bloque replica la misma estructura del reporte para calcular el promedio final del periodo.</p>
+                        <p class="notes-component-title">Componente: Aprendizaje en contacto con el docente Bimestre II (ACDB2) 35,000 % (= 3,5 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Peso</th>
+                                        <th>Nota /10</th>
+                                        <th>Nota ponderada</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>[ACDB2-35%][SUP1] Videocolaboracion: Aporte con datos para la simulacion de escenarios de proyectos</td>
+                                        <td>35%</td>
+                                        <td><input id="b2AcdbBase" type="number" min="0" max="10" step="0.01" value="0" class="notes-number-input"></td>
+                                        <td><span id="b2AcdbBaseAporte">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>[ACDB2-35%][SUP1] Actividad suplementaria: Aporte con datos para la simulacion de escenarios de proyectos</td>
+                                        <td>35%</td>
+                                        <td><input id="b2AcdbSup" type="number" min="0" max="10" step="0.01" value="3" class="notes-number-input"></td>
+                                        <td><span id="b2AcdbSupAporte">1.05</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="notes-component-title">Componente: Aprendizaje autonomo Bimestre II (AAB2) 35,000 % (= 3,5 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Peso</th>
+                                        <th>Nota /10</th>
+                                        <th>Nota ponderada</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Evaluacion bimestral</td>
+                                        <td>25%</td>
+                                        <td><input id="b2AabBimestral" type="number" min="0" max="10" step="0.01" value="10" class="notes-number-input"></td>
+                                        <td><span id="b2AabBimestralAporte">2.50</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Evaluacion parcial</td>
+                                        <td>10%</td>
+                                        <td><input id="b2AabParcial" type="number" min="0" max="10" step="0.01" value="9" class="notes-number-input"></td>
+                                        <td><span id="b2AabParcialAporte">0.90</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="notes-component-title">Componente: Aprendizaje practico experimental Bimestre II (APEB2) 30,000 % (= 3 ptos.)</p>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actividad</th>
+                                        <th>Peso</th>
+                                        <th>Nota /10</th>
+                                        <th>Nota ponderada</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Actividad practica experimental del segundo bimestre</td>
+                                        <td>30%</td>
+                                        <td><input id="b2Apeb" type="number" min="0" max="10" step="0.01" value="0" class="notes-number-input"></td>
+                                        <td><span id="b2ApebAporte">0.00</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="notes-total-line"><strong>Total II Bimestre:</strong> <span id="b2Total">4.45</span> / 10</p>
+                    </div>
+
+                    <div class="form-container notes-card">
+                        <h3><i class="fas fa-calculator"></i> Resumen</h3>
+                        <div class="notes-table-wrap">
+                            <table class="notes-table notes-table-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Resumen</th>
+                                        <th>Total</th>
+                                        <th>ACD</th>
+                                        <th>APE</th>
+                                        <th>AA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>I Bimestre</td>
+                                        <td><span id="resB1Total">7.01</span></td>
+                                        <td><span id="resB1Acd">3.50</span></td>
+                                        <td><span id="resB1Ape">0.90</span></td>
+                                        <td><span id="resB1Aa">2.61</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>II Bimestre</td>
+                                        <td><span id="resB2Total">4.45</span></td>
+                                        <td><span id="resB2Acd">1.05</span></td>
+                                        <td><span id="resB2Ape">0.00</span></td>
+                                        <td><span id="resB2Aa">3.40</span></td>
+                                    </tr>
+                                    <tr class="notes-summary-total-row">
+                                        <td>Total final</td>
+                                        <td><span id="totalPonderado">5.73</span></td>
+                                        <td><span id="resFinalAcd">2.27</span></td>
+                                        <td><span id="resFinalApe">0.45</span></td>
+                                        <td><span id="resFinalAa">3.00</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="notes-table-wrap">
+                            <table class="notes-table notes-table-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Indicador</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Acumulado (((ACD + APE) * 3) / 6.5)</td>
+                                        <td><span id="valorAcumulado">1.26</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nota de recuperacion (AA)</td>
+                                        <td><input id="notaRecuperacion" type="number" min="0" max="10" step="0.01" value="0" class="notes-number-input notes-number-input-short"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nota periodo</td>
+                                        <td><span id="notaPeriodo">5.73</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estado</td>
+                                        <td><span id="estadoNota">En recuperacion</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p id="mensajeNota" class="notes-message">La simulacion usa las mismas ponderaciones visibles en el reporte para que el resultado cambie con precision.</p>
+                        <p class="notes-legend">Leyenda: Acumulado = sumatoria del Total Final del ACD + APE ponderado a 3 puntos.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -39,8 +362,597 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Carlos Amancha. Todos los derechos reservados.</p>
-            <p><a href="/">Inicio</a> · <a href="/contacto.php">Contáctame</a> · <a href="/archivos.php">Gestión de Archivos</a></p>
+            <p><a href="index.html">Inicio</a> · <a href="notas.php">Notas</a> · <a href="contacto.php">Contáctame</a> · <a href="archivos.php">Gestión de Archivos</a></p>
         </div>
     </footer>
+
+    <script>
+        const STORAGE_KEY = 'carlos-amancha-simulaciones-notas-v1';
+        const CLIENT_ID_KEY = 'carlos-amancha-notes-client-id-v1';
+        const REGISTRO_ENDPOINT = 'notas_registro.php';
+
+        const metadataInputs = {
+            carreraPrograma: document.getElementById('carreraPrograma'),
+            periodoAcademico: document.getElementById('periodoAcademico'),
+            asignatura: document.getElementById('asignatura'),
+            codigoAsignatura: document.getElementById('codigoAsignatura')
+        };
+
+        const scoreInputs = {
+            b1AcdbBase: document.getElementById('b1AcdbBase'),
+            b1AcdbSup: document.getElementById('b1AcdbSup'),
+            b1AabParcial: document.getElementById('b1AabParcial'),
+            b1AabBimestral: document.getElementById('b1AabBimestral'),
+            b1Apeb: document.getElementById('b1Apeb'),
+            b2AcdbBase: document.getElementById('b2AcdbBase'),
+            b2AcdbSup: document.getElementById('b2AcdbSup'),
+            b2AabBimestral: document.getElementById('b2AabBimestral'),
+            b2AabParcial: document.getElementById('b2AabParcial'),
+            b2Apeb: document.getElementById('b2Apeb'),
+            notaRecuperacion: document.getElementById('notaRecuperacion')
+        };
+
+        const resultSpans = {
+            b1AcdbBaseAporte: document.getElementById('b1AcdbBaseAporte'),
+            b1AcdbSupAporte: document.getElementById('b1AcdbSupAporte'),
+            b1AabParcialAporte: document.getElementById('b1AabParcialAporte'),
+            b1AabBimestralAporte: document.getElementById('b1AabBimestralAporte'),
+            b1ApebAporte: document.getElementById('b1ApebAporte'),
+            b2AcdbBaseAporte: document.getElementById('b2AcdbBaseAporte'),
+            b2AcdbSupAporte: document.getElementById('b2AcdbSupAporte'),
+            b2AabBimestralAporte: document.getElementById('b2AabBimestralAporte'),
+            b2AabParcialAporte: document.getElementById('b2AabParcialAporte'),
+            b2ApebAporte: document.getElementById('b2ApebAporte'),
+            b1Total: document.getElementById('b1Total'),
+            b2Total: document.getElementById('b2Total'),
+            resB1Total: document.getElementById('resB1Total'),
+            resB1Acd: document.getElementById('resB1Acd'),
+            resB1Ape: document.getElementById('resB1Ape'),
+            resB1Aa: document.getElementById('resB1Aa'),
+            resB2Total: document.getElementById('resB2Total'),
+            resB2Acd: document.getElementById('resB2Acd'),
+            resB2Ape: document.getElementById('resB2Ape'),
+            resB2Aa: document.getElementById('resB2Aa'),
+            totalPonderado: document.getElementById('totalPonderado'),
+            resFinalAcd: document.getElementById('resFinalAcd'),
+            resFinalApe: document.getElementById('resFinalApe'),
+            resFinalAa: document.getElementById('resFinalAa'),
+            valorAcumulado: document.getElementById('valorAcumulado'),
+            notaPeriodo: document.getElementById('notaPeriodo'),
+            estadoNota: document.getElementById('estadoNota'),
+            mensajeNota: document.getElementById('mensajeNota')
+        };
+
+        const listaSimulaciones = document.getElementById('listaSimulaciones');
+        const simulacionEstado = document.getElementById('simulacionEstado');
+        const btnNuevaSimulacion = document.getElementById('btnNuevaSimulacion');
+        const btnDuplicarSimulacion = document.getElementById('btnDuplicarSimulacion');
+        const btnGuardarSimulacion = document.getElementById('btnGuardarSimulacion');
+        const btnImprimirSimulacion = document.getElementById('btnImprimirSimulacion');
+        const btnEliminarSimulacion = document.getElementById('btnEliminarSimulacion');
+        const registroOptIn = document.getElementById('registroOptIn');
+        const registroNombre = document.getElementById('registroNombre');
+        const registroCorreo = document.getElementById('registroCorreo');
+        const registroEstado = document.getElementById('registroEstado');
+        const metricUsuarios = document.getElementById('metricUsuarios');
+        const metricSimulaciones = document.getElementById('metricSimulaciones');
+
+        let currentSimulationId = null;
+        let isDirty = false;
+
+        function getDefaultState() {
+            return {
+                metadata: {
+                    carreraPrograma: 'Tecnologias de la Informacion',
+                    periodoAcademico: 'ABR/2026 - AGO/2026',
+                    asignatura: 'Gestion de Proyectos',
+                    codigoAsignatura: 'ADM1_4104'
+                },
+                scores: {
+                    b1AcdbBase: 0,
+                    b1AcdbSup: 10,
+                    b1AabParcial: 8,
+                    b1AabBimestral: 7.25,
+                    b1Apeb: 3,
+                    b2AcdbBase: 0,
+                    b2AcdbSup: 3,
+                    b2AabBimestral: 10,
+                    b2AabParcial: 9,
+                    b2Apeb: 0,
+                    notaRecuperacion: 0
+                }
+            };
+        }
+
+        function getBlankState() {
+            return {
+                metadata: {
+                    carreraPrograma: metadataInputs.carreraPrograma.value || 'Tecnologias de la Informacion',
+                    periodoAcademico: metadataInputs.periodoAcademico.value || 'ABR/2026 - AGO/2026',
+                    asignatura: 'Nueva materia',
+                    codigoAsignatura: ''
+                },
+                scores: {
+                    b1AcdbBase: 0,
+                    b1AcdbSup: 0,
+                    b1AabParcial: 0,
+                    b1AabBimestral: 0,
+                    b1Apeb: 0,
+                    b2AcdbBase: 0,
+                    b2AcdbSup: 0,
+                    b2AabBimestral: 0,
+                    b2AabParcial: 0,
+                    b2Apeb: 0,
+                    notaRecuperacion: 0
+                }
+            };
+        }
+
+        function cloneState(state) {
+            return JSON.parse(JSON.stringify(state));
+        }
+
+        function generateId() {
+            if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                return window.crypto.randomUUID();
+            }
+            return 'sim-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
+        }
+
+        function getClientId() {
+            let clientId = localStorage.getItem(CLIENT_ID_KEY);
+            if (!clientId) {
+                clientId = generateId();
+                localStorage.setItem(CLIENT_ID_KEY, clientId);
+            }
+            return clientId;
+        }
+
+        function loadSimulations() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveSimulations(simulations) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(simulations));
+        }
+
+        function setRegistroStatus(message, tone) {
+            registroEstado.textContent = message;
+            registroEstado.dataset.tone = tone || 'default';
+        }
+
+        function updateMetrics(metrics) {
+            if (!metrics) {
+                return;
+            }
+            metricUsuarios.textContent = String(metrics.totalUsers ?? 0);
+            metricSimulaciones.textContent = String(metrics.totalSimulations ?? 0);
+        }
+
+        async function fetchMetrics() {
+            try {
+                const response = await fetch(REGISTRO_ENDPOINT + '?action=metrics', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    return;
+                }
+                const payload = await response.json();
+                if (payload && payload.success) {
+                    updateMetrics(payload.metrics);
+                }
+            } catch (error) {
+                setRegistroStatus('No se pudo consultar el contador global en este momento.', 'warning');
+            }
+        }
+
+        async function registrarUsoEnServidor(data) {
+            try {
+                const response = await fetch(REGISTRO_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    setRegistroStatus('No se pudo registrar la simulación en el servidor.', 'warning');
+                    return;
+                }
+
+                const payload = await response.json();
+                if (payload && payload.success) {
+                    updateMetrics(payload.metrics);
+                    setRegistroStatus('Registro opcional enviado correctamente. Gracias por apoyar esta fase inicial.', 'success');
+                } else {
+                    setRegistroStatus('El servidor recibió la solicitud, pero no pudo confirmarla.', 'warning');
+                }
+            } catch (error) {
+                setRegistroStatus('No se pudo conectar con el servidor para registrar el uso.', 'warning');
+            }
+        }
+
+        function setStatus(message, tone) {
+            simulacionEstado.textContent = message;
+            simulacionEstado.dataset.tone = tone || 'default';
+        }
+
+        function limitarNota(input) {
+            const valor = Number(input.value || 0);
+            if (valor < 0) {
+                input.value = 0;
+            } else if (valor > 10) {
+                input.value = 10;
+            }
+            return Number(input.value || 0);
+        }
+
+        function ponderar(nota, peso) {
+            return nota * (peso / 100);
+        }
+
+        function calculateFromScores(scores) {
+            const calcB1AcdbBase = ponderar(scores.b1AcdbBase, 35);
+            const calcB1AcdbSup = ponderar(scores.b1AcdbSup, 35);
+            const calcB1AabParcial = ponderar(scores.b1AabParcial, 10);
+            const calcB1AabBimestral = ponderar(scores.b1AabBimestral, 25);
+            const calcB1Apeb = ponderar(scores.b1Apeb, 30);
+
+            const calcB2AcdbBase = ponderar(scores.b2AcdbBase, 35);
+            const calcB2AcdbSup = ponderar(scores.b2AcdbSup, 35);
+            const calcB2AabBimestral = ponderar(scores.b2AabBimestral, 25);
+            const calcB2AabParcial = ponderar(scores.b2AabParcial, 10);
+            const calcB2Apeb = ponderar(scores.b2Apeb, 30);
+
+            const totalB1Acd = calcB1AcdbBase + calcB1AcdbSup;
+            const totalB1Aa = calcB1AabParcial + calcB1AabBimestral;
+            const totalB1Ape = calcB1Apeb;
+            const totalB1 = totalB1Acd + totalB1Aa + totalB1Ape;
+
+            const totalB2Acd = calcB2AcdbBase + calcB2AcdbSup;
+            const totalB2Aa = calcB2AabBimestral + calcB2AabParcial;
+            const totalB2Ape = calcB2Apeb;
+            const totalB2 = totalB2Acd + totalB2Aa + totalB2Ape;
+
+            const finalAcd = (totalB1Acd + totalB2Acd) / 2;
+            const finalApe = (totalB1Ape + totalB2Ape) / 2;
+            const finalAa = (totalB1Aa + totalB2Aa) / 2;
+            const totalFinal = (totalB1 + totalB2) / 2;
+            const acumulado = ((finalAcd + finalApe) * 3) / 6.5;
+            const notaPeriodoActual = scores.notaRecuperacion > 0 ? Math.max(totalFinal, scores.notaRecuperacion) : totalFinal;
+
+            let status = 'En recuperacion';
+            let message = 'El promedio del periodo aun no alcanza 7 sobre 10; prueba distintos cambios o ingresa una nota de recuperacion.';
+            let color = '#b46b00';
+            let tone = 'warning';
+
+            if (notaPeriodoActual >= 7) {
+                status = 'Aprobado';
+                message = 'El promedio final del periodo alcanza la nota minima de aprobacion.';
+                color = '#1f8f3b';
+                tone = 'success';
+            } else if (scores.notaRecuperacion > 0 && notaPeriodoActual < 7) {
+                status = 'No aprobado';
+                message = 'Ni el promedio del periodo ni la recuperacion alcanzan 7 sobre 10.';
+                color = '#b42828';
+                tone = 'danger';
+            }
+
+            return {
+                calcB1AcdbBase,
+                calcB1AcdbSup,
+                calcB1AabParcial,
+                calcB1AabBimestral,
+                calcB1Apeb,
+                calcB2AcdbBase,
+                calcB2AcdbSup,
+                calcB2AabBimestral,
+                calcB2AabParcial,
+                calcB2Apeb,
+                totalB1Acd,
+                totalB1Aa,
+                totalB1Ape,
+                totalB1,
+                totalB2Acd,
+                totalB2Aa,
+                totalB2Ape,
+                totalB2,
+                finalAcd,
+                finalApe,
+                finalAa,
+                totalFinal,
+                acumulado,
+                notaPeriodoActual,
+                status,
+                message,
+                color,
+                tone
+            };
+        }
+
+        function readCurrentState() {
+            const metadata = {};
+            const scores = {};
+
+            Object.keys(metadataInputs).forEach((key) => {
+                metadata[key] = metadataInputs[key].value.trim();
+            });
+
+            Object.keys(scoreInputs).forEach((key) => {
+                scores[key] = limitarNota(scoreInputs[key]);
+            });
+
+            return { metadata, scores };
+        }
+
+        function applyState(state) {
+            const safeState = state || getDefaultState();
+
+            Object.keys(metadataInputs).forEach((key) => {
+                metadataInputs[key].value = safeState.metadata[key] ?? '';
+            });
+
+            Object.keys(scoreInputs).forEach((key) => {
+                scoreInputs[key].value = safeState.scores[key] ?? 0;
+            });
+        }
+
+        function getDisplayTitle(state) {
+            return state.metadata.asignatura || 'Materia sin nombre';
+        }
+
+        function formatDate(dateText) {
+            const date = new Date(dateText);
+            if (Number.isNaN(date.getTime())) {
+                return '';
+            }
+            return date.toLocaleString('es-EC', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderSimulationList() {
+            const simulations = loadSimulations().sort((left, right) => new Date(right.updatedAt) - new Date(left.updatedAt));
+            listaSimulaciones.innerHTML = '';
+
+            if (simulations.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'notes-empty-state';
+                emptyState.textContent = 'Aun no hay simulaciones guardadas. Crea una, guarda y aparecerá aqui.';
+                listaSimulaciones.appendChild(emptyState);
+                return;
+            }
+
+            simulations.forEach((simulation) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'notes-saved-item';
+
+                if (simulation.id === currentSimulationId) {
+                    button.classList.add('active');
+                }
+
+                const title = document.createElement('strong');
+                title.textContent = simulation.title + (simulation.id === currentSimulationId && isDirty ? ' *' : '');
+
+                const badge = document.createElement('span');
+                const summary = simulation.summary || calculateFromScores(simulation.state.scores);
+                badge.className = 'notes-status-badge notes-status-' + (summary.tone || 'warning');
+                badge.textContent = summary.status + ' · ' + Number(summary.notaPeriodoActual || 0).toFixed(2);
+
+                const meta = document.createElement('span');
+                meta.textContent = (simulation.code || 'Sin codigo') + ' · ' + formatDate(simulation.updatedAt);
+
+                button.appendChild(title);
+                button.appendChild(badge);
+                button.appendChild(meta);
+                button.addEventListener('click', () => {
+                    loadSimulationById(simulation.id);
+                });
+                listaSimulaciones.appendChild(button);
+            });
+        }
+
+        function markDirty() {
+            isDirty = true;
+            renderSimulationList();
+            if (currentSimulationId) {
+                setStatus('Hay cambios sin guardar en la simulacion seleccionada.', 'warning');
+            } else {
+                setStatus('Simulacion nueva sin guardar. Pulsa Guardar simulacion para agregarla al menu lateral.', 'warning');
+            }
+        }
+
+        function updateCalculations() {
+            const values = {};
+
+            Object.keys(scoreInputs).forEach((key) => {
+                values[key] = limitarNota(scoreInputs[key]);
+            });
+            const summary = calculateFromScores(values);
+
+            resultSpans.b1AcdbBaseAporte.textContent = summary.calcB1AcdbBase.toFixed(2);
+            resultSpans.b1AcdbSupAporte.textContent = summary.calcB1AcdbSup.toFixed(2);
+            resultSpans.b1AabParcialAporte.textContent = summary.calcB1AabParcial.toFixed(2);
+            resultSpans.b1AabBimestralAporte.textContent = summary.calcB1AabBimestral.toFixed(2);
+            resultSpans.b1ApebAporte.textContent = summary.calcB1Apeb.toFixed(2);
+            resultSpans.b2AcdbBaseAporte.textContent = summary.calcB2AcdbBase.toFixed(2);
+            resultSpans.b2AcdbSupAporte.textContent = summary.calcB2AcdbSup.toFixed(2);
+            resultSpans.b2AabBimestralAporte.textContent = summary.calcB2AabBimestral.toFixed(2);
+            resultSpans.b2AabParcialAporte.textContent = summary.calcB2AabParcial.toFixed(2);
+            resultSpans.b2ApebAporte.textContent = summary.calcB2Apeb.toFixed(2);
+
+            resultSpans.b1Total.textContent = summary.totalB1.toFixed(2);
+            resultSpans.b2Total.textContent = summary.totalB2.toFixed(2);
+            resultSpans.resB1Total.textContent = summary.totalB1.toFixed(2);
+            resultSpans.resB1Acd.textContent = summary.totalB1Acd.toFixed(2);
+            resultSpans.resB1Ape.textContent = summary.totalB1Ape.toFixed(2);
+            resultSpans.resB1Aa.textContent = summary.totalB1Aa.toFixed(2);
+            resultSpans.resB2Total.textContent = summary.totalB2.toFixed(2);
+            resultSpans.resB2Acd.textContent = summary.totalB2Acd.toFixed(2);
+            resultSpans.resB2Ape.textContent = summary.totalB2Ape.toFixed(2);
+            resultSpans.resB2Aa.textContent = summary.totalB2Aa.toFixed(2);
+            resultSpans.totalPonderado.textContent = summary.totalFinal.toFixed(2);
+            resultSpans.resFinalAcd.textContent = summary.finalAcd.toFixed(2);
+            resultSpans.resFinalApe.textContent = summary.finalApe.toFixed(2);
+            resultSpans.resFinalAa.textContent = summary.finalAa.toFixed(2);
+            resultSpans.valorAcumulado.textContent = summary.acumulado.toFixed(2);
+            resultSpans.notaPeriodo.textContent = summary.notaPeriodoActual.toFixed(2);
+            resultSpans.estadoNota.textContent = summary.status;
+            resultSpans.estadoNota.style.color = summary.color;
+            resultSpans.mensajeNota.textContent = summary.message;
+        }
+
+        function loadSimulationById(id) {
+            const simulation = loadSimulations().find((item) => item.id === id);
+            if (!simulation) {
+                return;
+            }
+            currentSimulationId = simulation.id;
+            isDirty = false;
+            applyState(cloneState(simulation.state));
+            updateCalculations();
+            renderSimulationList();
+            setStatus('Simulacion cargada: ' + simulation.title + '.', 'default');
+        }
+
+        function saveCurrentSimulation(options) {
+            const config = options || {};
+            const duplicate = config.duplicate === true;
+            const simulations = loadSimulations();
+            const state = readCurrentState();
+            const title = getDisplayTitle(state);
+            const code = state.metadata.codigoAsignatura || 'Sin codigo';
+            const simulationId = duplicate || !currentSimulationId ? generateId() : currentSimulationId;
+            const summary = calculateFromScores(state.scores);
+            const simulation = {
+                id: simulationId,
+                title: duplicate ? title + ' (copia)' : title,
+                code,
+                updatedAt: new Date().toISOString(),
+                state: cloneState(state),
+                summary: {
+                    status: summary.status,
+                    tone: summary.tone,
+                    notaPeriodoActual: Number(summary.notaPeriodoActual.toFixed(2))
+                }
+            };
+
+            const remaining = simulations.filter((item) => item.id !== simulationId);
+            remaining.unshift(simulation);
+            saveSimulations(remaining);
+
+            currentSimulationId = simulationId;
+            isDirty = false;
+            renderSimulationList();
+            setStatus('Simulacion guardada: ' + simulation.title + '.', 'success');
+
+            if (registroOptIn.checked) {
+                const correo = (registroCorreo.value || '').trim();
+                if (!correo) {
+                    setRegistroStatus('Marca opcional activa, pero falta correo para contar usuario unico.', 'warning');
+                }
+
+                registrarUsoEnServidor({
+                    event: 'save_simulation',
+                    clientId: getClientId(),
+                    student: {
+                        name: (registroNombre.value || '').trim(),
+                        email: correo
+                    },
+                    simulation: {
+                        title: simulation.title,
+                        code: simulation.code,
+                        status: simulation.summary.status,
+                        score: simulation.summary.notaPeriodoActual
+                    }
+                });
+            }
+        }
+
+        function createNewSimulation() {
+            currentSimulationId = null;
+            isDirty = false;
+            applyState(getBlankState());
+            updateCalculations();
+            renderSimulationList();
+            setStatus('Nueva simulacion lista. Completa la materia y guardala para verla en el menu lateral.', 'default');
+        }
+
+        function deleteCurrentSimulation() {
+            if (!currentSimulationId) {
+                setStatus('No hay una simulacion guardada seleccionada para eliminar.', 'warning');
+                return;
+            }
+
+            const simulations = loadSimulations().filter((item) => item.id !== currentSimulationId);
+            saveSimulations(simulations);
+            currentSimulationId = null;
+            isDirty = false;
+
+            if (simulations.length > 0) {
+                loadSimulationById(simulations[0].id);
+                setStatus('Simulacion eliminada. Se cargo la siguiente disponible.', 'success');
+            } else {
+                applyState(getBlankState());
+                updateCalculations();
+                renderSimulationList();
+                setStatus('Simulacion eliminada. Ya no quedan simulaciones guardadas.', 'success');
+            }
+        }
+
+        Object.values(scoreInputs).forEach((input) => {
+            input.addEventListener('input', () => {
+                updateCalculations();
+                markDirty();
+            });
+        });
+
+        Object.values(metadataInputs).forEach((input) => {
+            input.addEventListener('input', () => {
+                markDirty();
+            });
+        });
+
+        btnNuevaSimulacion.addEventListener('click', createNewSimulation);
+        btnDuplicarSimulacion.addEventListener('click', () => {
+            saveCurrentSimulation({ duplicate: true });
+        });
+        btnGuardarSimulacion.addEventListener('click', () => {
+            saveCurrentSimulation({ duplicate: false });
+        });
+        btnImprimirSimulacion.addEventListener('click', () => {
+            window.print();
+        });
+        btnEliminarSimulacion.addEventListener('click', deleteCurrentSimulation);
+
+        registroOptIn.addEventListener('change', () => {
+            if (registroOptIn.checked) {
+                setRegistroStatus('Registro opcional activo. Se enviará al guardar la simulación.', 'default');
+            } else {
+                setRegistroStatus('Puedes usar el simulador sin registro. Actívalo solo si deseas aportar al conteo.', 'default');
+            }
+        });
+
+        applyState(getDefaultState());
+        updateCalculations();
+        renderSimulationList();
+        fetchMetrics();
+    </script>
 </body>
 </html>
