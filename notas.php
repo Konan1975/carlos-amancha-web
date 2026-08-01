@@ -1,20 +1,21 @@
 <?php
 session_start();
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/classes/Notas.php';
 
 $errores = $_SESSION['errores_notas'] ?? [];
 unset($_SESSION['errores_notas']);
 $datos = $_SESSION['datos_nota'] ?? [];
 unset($_SESSION['datos_nota']);
 
-$conexion = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 $notas = [];
-if ($conexion->connect_errno) {
-    $notas = Notas::listar(null);
-} else {
-    $notas = Notas::listar($conexion);
-    $conexion->close();
+$archivoNotas = __DIR__ . '/data/notas.json';
+if (file_exists($archivoNotas)) {
+    $contenido = file_get_contents($archivoNotas);
+    if ($contenido !== false && trim($contenido) !== '') {
+        $datosArchivo = json_decode($contenido, true);
+        if (is_array($datosArchivo)) {
+            $notas = $datosArchivo;
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
