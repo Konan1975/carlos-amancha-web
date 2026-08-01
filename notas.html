@@ -528,6 +528,34 @@
             registroEstado.dataset.tone = tone || 'default';
         }
 
+        function isEmailValid(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function canPersistSimulations() {
+            const correo = (registroCorreo.value || '').trim();
+            return registroOptIn.checked && isEmailValid(correo);
+        }
+
+        function syncRegistrationModeUI() {
+            const enabled = canPersistSimulations();
+
+            btnGuardarSimulacion.disabled = !enabled;
+            btnDuplicarSimulacion.disabled = !enabled;
+            btnEliminarSimulacion.disabled = !enabled;
+            btnNuevaSimulacion.disabled = !enabled;
+
+            listaSimulaciones.classList.toggle('notes-sidebar-locked', !enabled);
+
+            if (!enabled) {
+                currentSimulationId = null;
+                isDirty = false;
+                setStatus('Modo libre activo: puedes calcular una materia a la vez. Para guardar varias simulaciones, activa registro opcional y correo.', 'warning');
+            }
+
+            renderSimulationList();
+        }
+
         function updateMetrics(metrics) {
             if (!metrics) {
                 return;
@@ -728,6 +756,15 @@
         }
 
         function renderSimulationList() {
+            if (!canPersistSimulations()) {
+                listaSimulaciones.innerHTML = '';
+                const lockedState = document.createElement('div');
+                lockedState.className = 'notes-empty-state';
+                lockedState.textContent = 'Registro no activado: el guardado múltiple está bloqueado. Puedes usar una sola materia en modo libre.';
+                listaSimulaciones.appendChild(lockedState);
+                return;
+            }
+
             const simulations = loadSimulations().sort((left, right) => new Date(right.updatedAt) - new Date(left.updatedAt));
             listaSimulaciones.innerHTML = '';
 
@@ -775,7 +812,7 @@
             if (currentSimulationId) {
                 setStatus('Hay cambios sin guardar en la simulacion seleccionada.', 'warning');
             } else {
-                setStatus('Simulacion nueva sin guardar. Pulsa Guardar simulacion para agregarla al menu lateral.', 'warning');
+                setStatus('Editando materia actual. Guarda para agregarla al menu lateral cuando tengas registro activo.', 'warning');
             }
         }
 
@@ -820,6 +857,10 @@
         }
 
         function loadSimulationById(id) {
+            if (!canPersistSimulations()) {
+                setStatus('Activa registro opcional con correo para cargar simulaciones guardadas.', 'warning');
+                return;
+            }
             const simulation = loadSimulations().find((item) => item.id === id);
             if (!simulation) {
                 return;
@@ -833,6 +874,12 @@
         }
 
         function saveCurrentSimulation(options) {
+            if (!canPersistSimulations()) {
+                setStatus('No se puede guardar: activa el registro opcional y agrega un correo valido.', 'warning');
+                setRegistroStatus('Para guardar simulaciones debes activar registro opcional y escribir un correo valido.', 'warning');
+                return;
+            }
+
             const config = options || {};
             const duplicate = config.duplicate === true;
             const simulations = loadSimulations();
@@ -863,30 +910,30 @@
             renderSimulationList();
             setStatus('Simulacion guardada: ' + simulation.title + '.', 'success');
 
-            if (registroOptIn.checked) {
-                const correo = (registroCorreo.value || '').trim();
-                if (!correo) {
-                    setRegistroStatus('Marca opcional activa, pero falta correo para contar usuario unico.', 'warning');
+            const correo = (registroCorreo.value || '').trim();
+            registrarUsoEnServidor({
+                event: 'save_simulation',
+                clientId: getClientId(),
+                student: {
+                    name: (registroNombre.value || '').trim(),
+                    email: correo
+                },
+                simulation: {
+                    title: simulation.title,
+                    code: simulation.code,
+                    status: simulation.summary.status,
+                    score: simulation.summary.notaPeriodoActual
                 }
-
-                registrarUsoEnServidor({
-                    event: 'save_simulation',
-                    clientId: getClientId(),
-                    student: {
-                        name: (registroNombre.value || '').trim(),
-                        email: correo
-                    },
-                    simulation: {
-                        title: simulation.title,
-                        code: simulation.code,
-                        status: simulation.summary.status,
-                        score: simulation.summary.notaPeriodoActual
-                    }
-                });
-            }
+            });
         }
 
         function createNewSimulation() {
+            if (!canPersistSimulations()) {
+                applyState(getBlankState());
+                updateCalculations();
+                setStatus('Modo libre: se reinicio la materia actual (una a la vez).', 'default');
+                return;
+            }
             currentSimulationId = null;
             isDirty = false;
             applyState(getBlankState());
@@ -896,6 +943,11 @@
         }
 
         function deleteCurrentSimulation() {
+            if (!canPersistSimulations()) {
+                setStatus('No hay guardado múltiple sin registro activo.', 'warning');
+                return;
+            }
+
             if (!currentSimulationId) {
                 setStatus('No hay una simulacion guardada seleccionada para eliminar.', 'warning');
                 return;
@@ -944,15 +996,29 @@
 
         registroOptIn.addEventListener('change', () => {
             if (registroOptIn.checked) {
-                setRegistroStatus('Registro opcional activo. Se enviará al guardar la simulación.', 'default');
+                setRegistroStatus('Registro opcional activo. Agrega un correo valido para habilitar guardado multiple.', 'default');
             } else {
                 setRegistroStatus('Puedes usar el simulador sin registro. Actívalo solo si deseas aportar al conteo.', 'default');
+            }
+            syncRegistrationModeUI();
+        });
+
+        registroCorreo.addEventListener('input', () => {
+            if (registroOptIn.checked && !canPersistSimulations()) {
+                setRegistroStatus('Escribe un correo valido para habilitar el guardado de simulaciones.', 'warning');
+            }
+            syncRegistrationModeUI();
+        });
+
+        registroNombre.addEventListener('input', () => {
+            if (registroOptIn.checked) {
+                syncRegistrationModeUI();
             }
         });
 
         applyState(getDefaultState());
         updateCalculations();
-        renderSimulationList();
+        syncRegistrationModeUI();
         fetchMetrics();
     </script>
 </body>

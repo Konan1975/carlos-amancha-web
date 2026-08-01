@@ -400,6 +400,13 @@ section h2 i {
     transform: translateY(-1px);
 }
 
+.notes-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .notes-btn-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -634,6 +641,10 @@ section h2 i {
     padding: 1rem;
     color: #5f6c83;
     background: white;
+}
+
+.notes-sidebar-locked {
+    opacity: 0.95;
 }
 
 .info-items {
