@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto - Carlos Amancha</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon-dragon-head.svg">
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -13,6 +14,7 @@
             <h1 class="logo">Carlos Amancha</h1>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
+                <li><a href="notas.php">Notas</a></li>
                 <li><a href="contacto.php" class="active">Contacto</a></li>
                 <li><a href="archivos.php">Archivos</a></li>
             </ul>
@@ -97,7 +99,7 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Carlos Amancha. Todos los derechos reservados.</p>
-            <p><a href="index.html">Volver al Inicio</a></p>
+            <p><a href="index.html">Volver al Inicio</a> · <a href="notas.html">Notas</a></p>
         </div>
     </footer>
 </body>

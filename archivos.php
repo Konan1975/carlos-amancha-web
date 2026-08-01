@@ -8,6 +8,11 @@ require_once __DIR__ . '/config.php';
 $manager = new GestorArchivos();
 $messages = [];
 
+// Si la conexión a la base de datos no está activa, informamos al usuario.
+if (method_exists($manager, 'estaConexionActiva') && !$manager->estaConexionActiva()) {
+    $messages[] = 'No se pudo conectar a la base de datos. Se mostrarán archivos encontrados en el servidor.';
+}
+
 // Genera un token CSRF si aún no existe para proteger formularios sensibles.
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -46,6 +51,7 @@ $files = $manager->listar();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de archivos - Carlos Amancha</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon-dragon-head.svg">
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -55,6 +61,7 @@ $files = $manager->listar();
             <h1 class="logo">Carlos Amancha</h1>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
+                <li><a href="notas.php">Notas</a></li>
                 <li><a href="contacto.php">Contacto</a></li>
                 <li><a href="archivos.php" class="active">Archivos</a></li>
             </ul>
@@ -138,7 +145,7 @@ $files = $manager->listar();
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Carlos Amancha. Todos los derechos reservados.</p>
-            <p><a href="index.html">Volver al Inicio</a></p>
+            <p><a href="index.html">Volver al Inicio</a> · <a href="notas.html">Notas</a></p>
         </div>
     </footer>
 </body>
